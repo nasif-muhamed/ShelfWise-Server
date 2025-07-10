@@ -10,23 +10,25 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+from datetime import timedelta
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0ep0(a$!@o-s#dyz^-dy+pg$uimrw2iw!*hyynl#)6**4*!*ph'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+DEBUG = os.getenv("DEBUG", "False") == "True"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Application definition
 
@@ -37,11 +39,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # installed
+    'rest_framework',
+    'corsheaders',
+
+    # created
+    'users',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -74,8 +84,12 @@ WSGI_APPLICATION = 'shelf_wise_server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -120,3 +134,68 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Simple JWT setup
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+ACCESS_TOKEN_LIFETIME = os.getenv("ACCESS_TOKEN_LIFETIME", 5)
+REFRESH_TOKEN_LIFETIME = os.getenv("REFRESH_TOKEN_LIFETIME", 1)
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(ACCESS_TOKEN_LIFETIME)),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(REFRESH_TOKEN_LIFETIME)),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'SIGNING_KEY': os.getenv('JWT_SECRET_KEY'),  
+    'ALGORITHM': os.getenv('JWT_ALGORITHM'),
+}
+
+
+# CORS setup
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:8000").split(",")
+
+
+# Logging setup
+LOG_LEVEL = os.getenv("DJANGO_LOG_LEVEL", "INFO")
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} [{levelname}] {name} - {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '[{levelname}] {message}',
+            'style': '{',
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'level': LOG_LEVEL,
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'level': LOG_LEVEL,
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
+            'formatter': 'verbose',
+        },
+    },
+
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': LOG_LEVEL,
+            'propagate': True,
+        },
+    }
+}
