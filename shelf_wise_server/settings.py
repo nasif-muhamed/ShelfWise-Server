@@ -135,6 +135,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Abstract User
+AUTH_USER_MODEL = "users.Profile"
 
 # Simple JWT setup
 REST_FRAMEWORK = {
@@ -161,7 +163,7 @@ CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:8000"
 
 
 # Logging setup
-LOG_LEVEL = os.getenv("DJANGO_LOG_LEVEL", "INFO")
+LOG_LEVEL = os.getenv("DJANGO_LOG_LEVEL", "DEBUG")
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -194,8 +196,34 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console', 'file'],
-            'level': LOG_LEVEL,
+            'level': 'INFO',
             'propagate': True,
         },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+        },
+        'users': {
+            'handlers': ['console', 'file'],
+            'level': LOG_LEVEL,
+            'propagate': False,
+        },
+    }
+}
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD_USER')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER 
+
+# Cache set up - default
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'shelf_wise-user-auth',
     }
 }

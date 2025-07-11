@@ -7,3 +7,4 @@ media
 
 venv/
 .env
+logs
