@@ -29,7 +29,7 @@ def set_cache_otp(username, otp, data, flow="register"):
         'last_sent': now,
     }
     cache_key = get_cache_key(username, flow)
-    cache.set(cache_key, cache_data, timeout=180)  # 3 minutes expiry
+    cache.set(cache_key, cache_data, timeout=60)  # 1 minutes expiry
     dt_object = datetime.fromtimestamp(now) + timedelta(minutes=3)
     iso_datetime = dt_object.isoformat()
     return iso_datetime

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     # created
     'users',
+    'books',
 ]
 
 MIDDLEWARE = [
@@ -204,6 +205,11 @@ LOGGING = {
             'level': 'WARNING',
         },
         'users': {
+            'handlers': ['console', 'file'],
+            'level': LOG_LEVEL,
+            'propagate': False,
+        },
+        'books': {
             'handlers': ['console', 'file'],
             'level': LOG_LEVEL,
             'propagate': False,
