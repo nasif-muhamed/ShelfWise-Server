@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # created
     'users',
     'books',
+    'reading_lists',
 ]
 
 MIDDLEWARE = [

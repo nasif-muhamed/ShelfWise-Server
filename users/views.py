@@ -64,9 +64,7 @@ class AdminUserActionView(APIView):
             serializer = UsersListSerializer(user_after_action)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Http404:
-            return Response(
-                {"detail": "User with the given ID does not exist."},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            error = {"detail": "User with the given ID does not exist."}
+            return Response(error, status=status.HTTP_404_NOT_FOUND)
         except Exception as err:
             return handle_unexpected_error(err, "An unexpected error occured during user action.")

@@ -16,8 +16,8 @@ class BookSerializer(serializers.ModelSerializer):
         user = self.context.get('user')
         title = attrs.get('title')
         if user and title:
-            if does_similar_book_exists(user, title):
-                raise serializers.ValidationError({"title": "You have already uploaded a book with this title."})
+            if does_similar_book_exists(title):
+                raise serializers.ValidationError({"title": "A book with same title exists."})
 
         return attrs
     
@@ -37,8 +37,8 @@ class PublisherBookSerializer(serializers.ModelSerializer):
         user = self.context.get('user')
         title = attrs.get('title')
         if user and title:
-            if does_similar_book_exists(user=user, title=title):
-                raise serializers.ValidationError({"title": "You have already uploaded a book with this title."})
+            if does_similar_book_exists(title=title):
+                raise serializers.ValidationError({"title": "A book with same title exists."})
 
         return attrs
     
