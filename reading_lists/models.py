@@ -26,11 +26,8 @@ class ReadingListBook(models.Model):
     order = models.PositiveIntegerField()
 
     class Meta:
-        # unique_together = ('reading_list', 'book')
+        unique_together = ('reading_list', 'book')
         ordering = ['order']
-        constraints = [
-            models.UniqueConstraint(fields=['name', 'user'], name='unique_read_list_book_per_read_list')
-        ]
 
     def __str__(self):
         return f"{self.book.title} in {self.reading_list.name} (Order: {self.order})"

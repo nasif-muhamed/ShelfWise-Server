@@ -165,6 +165,8 @@ CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:8000"
 
 
 # Logging setup
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+os.makedirs(LOG_DIR, exist_ok=True)
 LOG_LEVEL = os.getenv("DJANGO_LOG_LEVEL", "DEBUG")
 LOGGING = {
     'version': 1,
