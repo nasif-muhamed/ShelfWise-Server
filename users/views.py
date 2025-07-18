@@ -13,6 +13,10 @@ from .services.services import take_user_action, get_all_profiles
 
 logger = logging.getLogger(__name__)
 
+class SayHelloView(APIView):
+    def get(self, request):
+        return Response({"message": "Hello..."}, status=status.HTTP_200_OK)
+
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
