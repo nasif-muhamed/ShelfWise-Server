@@ -10,12 +10,14 @@ from .serializers import ReadingListSerializer, ReadingListBookSerializer, Detai
 from .services.services import get_my_reading_list, delete_and_update_reading_list_book, update_and_reorder_reading_list_books, reorder_reading_list
 from common.exception_handlers import handle_unexpected_error
 from common.permissions import IsReadingListOwner
+from common.pagination import CustomPageNumberPagination
 
 logger = logging.getLogger(__name__)
 
 class ReadingListViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
-
+    pagination_class = CustomPageNumberPagination
+    
     def get_queryset(self):
         return get_my_reading_list(self.request.user)
 

@@ -23,11 +23,15 @@ class ReadingListBookSerializer(serializers.ModelSerializer):
         return attrs
     
 class ReadingListSerializer(serializers.ModelSerializer):
+    total_books = serializers.SerializerMethodField()
     class Meta:
         model = ReadingList
         exclude = ["user"]
         read_only_fields = ["id", "created_at", "updated_at"]
     
+    def get_total_books(self, obj):
+        return obj.books_list.count()
+
     def validate(self, attrs):
         user = self.context['request'].user
         name = attrs.get('name')
