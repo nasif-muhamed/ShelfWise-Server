@@ -2,10 +2,12 @@ import re
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .services.services import create_new_user
+from .validators import validate_username, validate_first_name, validate_last_name, validate_bio
 
 Profile = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(validators=[validate_username])
     class Meta:
         model = Profile
         fields = ['username', 'email', 'password']
@@ -41,6 +43,9 @@ class UsersListSerializer(serializers.ModelSerializer):
         exclude = ['password', 'user_permissions', 'groups', "date_joined", "last_login"]
 
 class UserSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(validators=[validate_first_name], required=False)
+    last_name = serializers.CharField(validators=[validate_last_name], required=False)
+    bio = serializers.CharField(validators=[validate_bio], required=False)
     class Meta:
         model = Profile
         fields = ["id", "username", "first_name", "last_name", "email", "bio", "picture", "created_at"]

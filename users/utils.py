@@ -11,7 +11,7 @@ def get_cache_key(username, flow):
 def generate_and_send_otp(email, flow='register'):
     otp = random.randint(100000, 999999)
     if flow == 'register':
-        subject = 'Your One Time Password (OTP) for LearNerds'
+        subject = 'Your One Time Password (OTP) for ShelfWise'
         message = f'Your OTP code is {otp}'
     else:
         subject = 'Your One Time Password (OTP) for Password Reset'
